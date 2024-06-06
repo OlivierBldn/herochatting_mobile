@@ -29,13 +29,11 @@ class AuthService {
           ),
         );
         final data = jsonDecode(payload['data']);
-        await saveId(data['id']);
         return User.fromJson(data);
       }
     }
     return null;
   }
-
 
   Future<User?> register(String username, String password, String email, String firstname, String lastname) async {
     final response = await http.post(
