@@ -1,4 +1,4 @@
-// lib/providers/character_provider.dart
+// // lib/providers/character_provider.dart
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -60,6 +60,28 @@ class CharacterProvider with ChangeNotifier {
       body: json.encode({
         'name': name,
       }),
+    );
+
+    if (response.statusCode == 200) {
+      final updatedCharacter = Character.fromJson(json.decode(response.body));
+      final index = _characters.indexWhere((character) => character.id == characterId);
+      if (index != -1) {
+        _characters[index] = updatedCharacter;
+        notifyListeners();
+      }
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> regenerateCharacterDescription(int universeId, int characterId) async {
+    final token = await AuthService().getToken();
+    final response = await http.put(
+      Uri.parse('${AuthService().apiUrl}/universes/$universeId/characters/$characterId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
     );
 
     if (response.statusCode == 200) {

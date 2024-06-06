@@ -1,15 +1,46 @@
-// lib/screens/character_detail_screen.dart
+// // lib/screens/character_detail_screen.dart
 
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../models/character.dart';
+import '../providers/character_provider.dart';
 import '../providers/chat_provider.dart';
 import 'package:provider/provider.dart';
 
-class CharacterDetailScreen extends StatelessWidget {
+class CharacterDetailScreen extends StatefulWidget {
   final Character character;
 
   const CharacterDetailScreen({super.key, required this.character});
+
+  @override
+  CharacterDetailScreenState createState() => CharacterDetailScreenState();
+}
+
+class CharacterDetailScreenState extends State<CharacterDetailScreen> {
+  late Character character;
+
+  @override
+  void initState() {
+    super.initState();
+    character = widget.character;
+  }
+
+  Future<void> _regenerateDescription() async {
+    final characterProvider = Provider.of<CharacterProvider>(context, listen: false);
+    final success = await characterProvider.regenerateCharacterDescription(character.universeId, character.id);
+    if (success) {
+      setState(() {
+        character = characterProvider.characters.firstWhere((c) => c.id == character.id);
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Description regenerated')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to regenerate description')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,13 +69,11 @@ class CharacterDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Text(character.description),
-            // const SizedBox(height: 20),
-            // ElevatedButton(
-            //   onPressed: () {
-            //     Navigator.of(context).pushNamed('/chat_list', arguments: character.id);
-            //   },
-            //   child: const Text('View Chats'),
-            // ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _regenerateDescription,
+              child: const Text('Regenerate Description'),
+            ),
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () async {
