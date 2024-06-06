@@ -8,8 +8,9 @@ import '../services/auth_service.dart';
 
 class UserProvider with ChangeNotifier {
   List<User> _users = [];
+  List<User> _filteredUsers = [];
 
-  List<User> get users => _users;
+  List<User> get users => _filteredUsers;
 
   Future<void> fetchUsers() async {
     final token = await AuthService().getToken();
@@ -20,10 +21,26 @@ class UserProvider with ChangeNotifier {
     if (response.statusCode == 200) {
       final List<dynamic> userJson = json.decode(response.body);
       _users = userJson.map((json) => User.fromJson(json)).toList();
+      _filteredUsers = _users;
       notifyListeners();
     } else {
       throw Exception('Failed to load users');
     }
+  }
+
+  void filterUsers(String query) {
+    if (query.isEmpty) {
+      _filteredUsers = _users;
+    } else {
+      _filteredUsers = _users.where((user) {
+        final usernameLower = user.username.toLowerCase();
+        final emailLower = user.email.toLowerCase();
+        final queryLower = query.toLowerCase();
+
+        return usernameLower.contains(queryLower) || emailLower.contains(queryLower);
+      }).toList();
+    }
+    notifyListeners();
   }
 
   Future<bool> updateUser(int id, String username, String email, String firstname, String lastname) async {
