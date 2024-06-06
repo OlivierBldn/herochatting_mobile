@@ -3,50 +3,54 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/chat_provider.dart';
-import '../models/chat.dart';
+import '../models/message.dart';
 
-class ChatDetailScreen extends StatelessWidget {
+class ChatDetailScreen extends StatefulWidget {
   final int chatId;
 
   const ChatDetailScreen({super.key, required this.chatId});
 
   @override
-  Widget build(BuildContext context) {
-    final messageController = TextEditingController();
+  ChatDetailScreenState createState() => ChatDetailScreenState();
+}
 
+class ChatDetailScreenState extends State<ChatDetailScreen> {
+  final TextEditingController messageController = TextEditingController();
+  List<Message> messages = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLastMessage();
+  }
+
+  Future<void> _loadLastMessage() async {
+    final chatProvider = Provider.of<ChatProvider>(context, listen: false);
+    final lastMessage = await chatProvider.fetchLastMessage(widget.chatId);
+    if (lastMessage != null) {
+      setState(() {
+        messages.add(lastMessage);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat $chatId'),
+        title: Text('Chat ${widget.chatId}'),
       ),
       body: Column(
         children: [
           Expanded(
-            child: FutureBuilder(
-              future: Provider.of<ChatProvider>(context, listen: false).fetchChats(),
-              builder: (ctx, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else {
-                  return Consumer<ChatProvider>(
-                    builder: (ctx, chatProvider, child) {
-                      final chat = chatProvider.chats.firstWhere((chat) => chat.id == chatId, orElse: () => Chat(id: chatId, characterId: 0, messages: []));
-                      final messages = chat.messages;
-
-                      return ListView.builder(
-                        itemCount: messages.length,
-                        itemBuilder: (ctx, i) {
-                          final message = messages[i];
-                          return ListTile(
-                            title: Text(message.content),
-                            subtitle: Text(message.isSentByHuman ? 'You' : 'Character'),
-                          );
-                        },
-                      );
-                    },
-                  );
-                }
+            child: ListView.builder(
+              itemCount: messages.length,
+              itemBuilder: (ctx, i) {
+                final message = messages[i];
+                return ListTile(
+                  title: Text(message.content),
+                  subtitle: Text(message.isSentByHuman ? 'You' : 'Character'),
+                );
               },
             ),
           ),
@@ -64,21 +68,27 @@ class ChatDetailScreen extends StatelessWidget {
                   icon: const Icon(Icons.send),
                   onPressed: () async {
                     final chatProvider = Provider.of<ChatProvider>(context, listen: false);
-                    try {
-                      final success = await chatProvider.sendMessage(chatId, messageController.text);
-                      if (success) {
-                        messageController.clear();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Message sent')),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Failed to send message')),
-                        );
+                    final success = await chatProvider.sendMessage(widget.chatId, messageController.text);
+                    if (success) {
+                      final newMessage = Message(
+                        id: DateTime.now().millisecondsSinceEpoch,
+                        content: messageController.text,
+                        isSentByHuman: true,
+                      );
+                      final responseMessage = await chatProvider.fetchLastMessage(widget.chatId);
+                      if (responseMessage != null) {
+                        setState(() {
+                          messages.add(newMessage);
+                          messages.add(responseMessage);
+                        });
                       }
-                    } catch (error) {
+                      messageController.clear();
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error: $error')),
+                        const SnackBar(content: Text('Message sent')),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Failed to send message')),
                       );
                     }
                   },

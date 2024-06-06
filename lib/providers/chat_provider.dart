@@ -32,6 +32,28 @@ class ChatProvider with ChangeNotifier {
     }
   }
 
+  Future<Message?> fetchLastMessage(int chatId) async {
+    final token = await AuthService().getToken();
+    try {
+      final response = await http.get(Uri.parse('${AuthService().apiUrl}/conversations/$chatId/messages'), headers: {
+        'Authorization': 'Bearer $token',
+      });
+
+      if (response.statusCode == 200) {
+        final List<dynamic> messagesJson = json.decode(response.body) as List<dynamic>;
+        if (messagesJson.isNotEmpty) {
+          final lastMessageJson = messagesJson.last;
+          return Message.fromJson(lastMessageJson);
+        }
+        return null;
+      } else {
+        throw Exception('Failed to load last message');
+      }
+    } catch (error) {
+      rethrow;
+    }
+  }
+
   Future<bool> createChat(int characterId) async {
     final token = await AuthService().getToken();
     final userId = await AuthService().getId();

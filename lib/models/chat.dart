@@ -23,4 +23,11 @@ class Chat {
           [],
     );
   }
+
+  Message? getLastMessage() {
+    if (messages.isNotEmpty) {
+      return messages.last;
+    }
+    return null;
+  }
 }
