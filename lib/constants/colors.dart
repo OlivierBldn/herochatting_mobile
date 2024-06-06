@@ -1,3 +1,5 @@
+// lib/constants/colors.dart
+
 import 'package:flutter/widgets.dart';
 
 class AppColor {
