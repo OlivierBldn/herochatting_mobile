@@ -26,27 +26,6 @@ class UniverseProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> createUniverse(String name) async {
-    final token = await AuthService().getToken();
-    final response = await http.post(
-      Uri.parse('${AuthService().apiUrl}/universes'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: json.encode({'name': name}),
-    );
-
-    if (response.statusCode == 201) {
-      final newUniverse = Universe.fromJson(json.decode(response.body));
-      _universes.add(newUniverse);
-      notifyListeners();
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   Future<bool> updateUniverse(int id, String name) async {
     final token = await AuthService().getToken();
     final response = await http.put(
@@ -55,7 +34,9 @@ class UniverseProvider with ChangeNotifier {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: json.encode({'name': name}),
+      body: json.encode({
+        'name': name,
+      }),
     );
 
     if (response.statusCode == 200) {
@@ -71,17 +52,22 @@ class UniverseProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> deleteUniverse(int id) async {
+  Future<bool> createUniverse(String name) async {
     final token = await AuthService().getToken();
-    final response = await http.delete(
-      Uri.parse('${AuthService().apiUrl}/universes/$id'),
+    final response = await http.post(
+      Uri.parse('${AuthService().apiUrl}/universes'),
       headers: {
+        'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
+      body: json.encode({
+        'name': name,
+      }),
     );
 
-    if (response.statusCode == 204) {
-      _universes.removeWhere((universe) => universe.id == id);
+    if (response.statusCode == 201) {
+      final newUniverse = Universe.fromJson(json.decode(response.body));
+      _universes.add(newUniverse);
       notifyListeners();
       return true;
     } else {

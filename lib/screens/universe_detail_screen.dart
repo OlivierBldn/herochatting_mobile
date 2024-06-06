@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../models/universe.dart';
 import '../providers/universe_provider.dart';
 
@@ -18,10 +19,19 @@ class UniverseDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(universe.name),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            if (universe.image.isNotEmpty)
+              CachedNetworkImage(
+                imageUrl: 'https://mds.sprw.dev/image_data/${universe.image}',
+                placeholder: (context, url) => const CircularProgressIndicator(),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+              ),
+            const SizedBox(height: 20),
+            Text(universe.description),
+            const SizedBox(height: 20),
             TextField(
               controller: nameController,
               decoration: const InputDecoration(labelText: 'Universe Name'),
@@ -43,24 +53,6 @@ class UniverseDetailScreen extends StatelessWidget {
                 }
               },
               child: const Text('Save'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                final universeProvider = Provider.of<UniverseProvider>(context, listen: false);
-                final success = await universeProvider.deleteUniverse(universe.id);
-                if (success) {
-                  Navigator.of(context).pop();
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Failed to delete universe')),
-                  );
-                }
-              },
-              child: const Text('Delete'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-              ),
             ),
           ],
         ),
