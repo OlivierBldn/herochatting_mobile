@@ -1,12 +1,14 @@
-// lib/screens/universe_list_screen.dart
+// lib/screens/character_list_screen.dart
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../providers/universe_provider.dart';
+import '../providers/character_provider.dart';
 
-class UniverseListScreen extends StatelessWidget {
-  const UniverseListScreen({super.key});
+class CharacterListScreen extends StatelessWidget {
+  final int universeId;
+
+  const CharacterListScreen({super.key, required this.universeId});
 
   @override
   Widget build(BuildContext context) {
@@ -14,16 +16,16 @@ class UniverseListScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Universes'),
+        title: const Text('Characters'),
       ),
       body: FutureBuilder(
-        future: Provider.of<UniverseProvider>(context, listen: false).fetchUniverses(),
+        future: Provider.of<CharacterProvider>(context, listen: false).fetchCharacters(universeId),
         builder: (ctx, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else {
-            return Consumer<UniverseProvider>(
-              builder: (ctx, universeProvider, child) {
+            return Consumer<CharacterProvider>(
+              builder: (ctx, characterProvider, child) {
                 return Column(
                   children: [
                     Padding(
@@ -31,24 +33,25 @@ class UniverseListScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Create a new universe'),
+                          const Text('Create a new character'),
                           TextField(
                             controller: nameController,
-                            decoration: const InputDecoration(labelText: 'Universe Name'),
+                            decoration: const InputDecoration(labelText: 'Character Name'),
                           ),
                           ElevatedButton(
                             onPressed: () async {
-                              final success = await universeProvider.createUniverse(
+                              final success = await characterProvider.createCharacter(
+                                universeId,
                                 nameController.text,
                               );
                               if (success) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Universe created')),
+                                  const SnackBar(content: Text('Character created')),
                                 );
                                 nameController.clear();
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Failed to create universe')),
+                                  const SnackBar(content: Text('Failed to create character')),
                                 );
                               }
                             },
@@ -59,13 +62,13 @@ class UniverseListScreen extends StatelessWidget {
                     ),
                     Expanded(
                       child: ListView.builder(
-                        itemCount: universeProvider.universes.length,
+                        itemCount: characterProvider.characters.length,
                         itemBuilder: (ctx, i) {
-                          final universe = universeProvider.universes[i];
+                          final character = characterProvider.characters[i];
                           return ListTile(
-                            leading: universe.image.isNotEmpty
+                            leading: character.image.isNotEmpty
                                 ? CachedNetworkImage(
-                                    imageUrl: 'https://mds.sprw.dev/image_data/${universe.image}',
+                                    imageUrl: 'https://mds.sprw.dev/image_data/${character.image}',
                                     width: 50,
                                     height: 50,
                                     fit: BoxFit.cover,
@@ -73,9 +76,9 @@ class UniverseListScreen extends StatelessWidget {
                                     errorWidget: (context, url, error) => const Icon(Icons.error),
                                   )
                                 : null,
-                            title: Text(universe.name),
+                            title: Text(character.name),
                             onTap: () {
-                              Navigator.of(context).pushNamed('/universe_detail', arguments: universe);
+                              Navigator.of(context).pushNamed('/character_detail', arguments: character);
                             },
                           );
                         },

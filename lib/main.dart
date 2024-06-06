@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
 import 'providers/user_provider.dart';
 import 'providers/universe_provider.dart';
+import 'providers/character_provider.dart';
 import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/register_screen.dart';
@@ -12,8 +13,11 @@ import 'screens/user_list_screen.dart';
 import 'screens/user_detail_screen.dart';
 import 'screens/universe_list_screen.dart';
 import 'screens/universe_detail_screen.dart';
+import 'screens/character_list_screen.dart';
+import 'screens/character_detail_screen.dart';
 import 'models/user.dart';
 import 'models/universe.dart';
+import 'models/character.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,6 +33,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => UserProvider()),
         ChangeNotifierProvider(create: (context) => UniverseProvider()),
+        ChangeNotifierProvider(create: (context) => CharacterProvider()),
       ],
       child: MaterialApp(
         title: 'Herochatting',
@@ -56,6 +61,20 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(
               builder: (context) {
                 return UniverseDetailScreen(universe: universe);
+              },
+            );
+          } else if (settings.name == '/character_list') {
+            final universeId = settings.arguments as int;
+            return MaterialPageRoute(
+              builder: (context) {
+                return CharacterListScreen(universeId: universeId);
+              },
+            );
+          } else if (settings.name == '/character_detail') {
+            final character = settings.arguments as Character;
+            return MaterialPageRoute(
+              builder: (context) {
+                return CharacterDetailScreen(character: character);
               },
             );
           }

@@ -54,6 +54,13 @@ class UniverseDetailScreen extends StatelessWidget {
               },
               child: const Text('Save'),
             ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('/character_list', arguments: universe.id);
+              },
+              child: const Text('View Characters'),
+            ),
           ],
         ),
       ),

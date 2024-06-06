@@ -1,27 +1,27 @@
-// lib/models/universe.dart
+// lib/models/character.dart
 
-class Universe {
+class Character {
   final int id;
   final String name;
   final String description;
   final String image;
-  final int creatorId;
+  final int universeId;
 
-  Universe({
+  Character({
     required this.id,
     required this.name,
     required this.description,
     required this.image,
-    required this.creatorId,
+    required this.universeId,
   });
 
-  factory Universe.fromJson(Map<String, dynamic> json) {
-    return Universe(
+  factory Character.fromJson(Map<String, dynamic> json) {
+    return Character(
       id: int.parse(json['id'].toString()),
       name: json['name'],
       description: json['description'] ?? '',
       image: json['image'] ?? '',
-      creatorId: json['creator_id'],
+      universeId: json['universe_id'],
     );
   }
 }
