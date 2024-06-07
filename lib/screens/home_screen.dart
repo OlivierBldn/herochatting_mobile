@@ -45,7 +45,7 @@ class HomeScreen extends StatelessWidget {
               onPressed: () {
                 final authProvider = Provider.of<AuthProvider>(context, listen: false);
                 authProvider.logout();
-                Navigator.of(context).pushReplacementNamed('/');
+                Navigator.of(context).pushReplacementNamed('/login');
               },
             ),
           ],

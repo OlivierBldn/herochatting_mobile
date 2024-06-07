@@ -7,6 +7,7 @@ import 'providers/user_provider.dart';
 import 'providers/universe_provider.dart';
 import 'providers/character_provider.dart';
 import 'providers/chat_provider.dart';
+import 'screens/initial_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/register_screen.dart';
@@ -46,7 +47,8 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: '/',
         routes: {
-          '/': (context) => const LoginScreen(),
+          '/': (context) => const InitialScreen(),
+          '/login': (context) => const LoginScreen(),
           '/home': (context) => const HomeScreen(),
           '/register': (context) => const RegisterScreen(),
           '/user_list': (context) => const UserListScreen(),
