@@ -54,6 +54,26 @@ class ChatProvider with ChangeNotifier {
     }
   }
 
+
+    Future<List<Message>> fetchMessages(int chatId, {int? beforeMessageId}) async {
+    final token = await AuthService().getToken();
+    try {
+      final url = Uri.parse('${AuthService().apiUrl}/conversations/$chatId/messages${beforeMessageId != null ? '?before_id=$beforeMessageId' : ''}');
+      final response = await http.get(url, headers: {
+        'Authorization': 'Bearer $token',
+      });
+
+      if (response.statusCode == 200) {
+        final List<dynamic> messagesJson = json.decode(response.body) as List<dynamic>;
+        return messagesJson.map((json) => Message.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load messages');
+      }
+    } catch (error) {
+      rethrow;
+    }
+  }
+
   Future<bool> createChat(int characterId) async {
     final token = await AuthService().getToken();
     final userId = await AuthService().getId();
