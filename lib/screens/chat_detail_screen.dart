@@ -53,6 +53,34 @@ class ChatDetailScreenState extends State<ChatDetailScreen> {
     });
   }
 
+  Future<void> _regenerateLastMessage() async {
+    final chatProvider = Provider.of<ChatProvider>(context, listen: false);
+    final success = await chatProvider.regenerateLastMessage(widget.chatId);
+    if (success) {
+      final newMessage = await chatProvider.fetchLastMessage(widget.chatId);
+      if (newMessage != null) {
+        setState(() {
+          messages[messages.length - 1] = newMessage;
+        });
+      }
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeOut,
+        );
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Last message regenerated')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to regenerate last message')),
+      );
+    }
+  }
+
   @override
   void dispose() {
     scrollController.dispose();
@@ -83,6 +111,10 @@ class ChatDetailScreenState extends State<ChatDetailScreen> {
                   );
                 },
               ),
+            ),
+            ElevatedButton(
+              onPressed: _regenerateLastMessage,
+              child: const Text('Regenerate Last Message'),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),

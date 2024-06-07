@@ -158,4 +158,60 @@ class ChatProvider with ChangeNotifier {
       return false;
     }
   }
+
+  Future<bool> reloadChat(int chatId) async {
+  final token = await AuthService().getToken();
+
+  try {
+    final response = await http.get(
+      Uri.parse('${AuthService().apiUrl}/conversations/$chatId'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final responseBody = json.decode(response.body);
+      final updatedChat = Chat.fromJson(responseBody);
+
+      final chatIndex = _chats.indexWhere((chat) => chat.id == chatId);
+      if (chatIndex != -1) {
+        _chats[chatIndex] = updatedChat;
+        notifyListeners();
+      }
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    return false;
+  }
+}
+
+  Future<bool> regenerateLastMessage(int chatId) async {
+    final token = await AuthService().getToken();
+    final chatIndex = _chats.indexWhere((chat) => chat.id == chatId);
+    if (chatIndex == -1) {
+      return false;
+    }
+
+    try {
+      final response = await http.put(
+        Uri.parse('${AuthService().apiUrl}/conversations/$chatId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return await reloadChat(chatId);
+      } else {
+        return false;
+      }
+    } catch (error) {
+      return false;
+    }
+  }
 }
