@@ -52,6 +52,7 @@ class UserDetailScreen extends StatelessWidget {
                   firstnameController.text,
                   lastnameController.text,
                 );
+                if (!context.mounted) return;
                 if (success) {
                   Navigator.of(context).pop();
                 } else {

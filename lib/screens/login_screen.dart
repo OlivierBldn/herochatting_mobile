@@ -46,7 +46,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     _usernameController.text,
                     _passwordController.text,
                   );
-                  if (!mounted) return;
+
+                  if (!context.mounted) return;
+
                   if (authProvider.user != null) {
                     Navigator.of(context).pushReplacementNamed('/home');
                   } else {
@@ -56,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   }
                 } catch (e) {
                   _logger.e("Login failed", e);
-                  if (!mounted) return;
+                  if (!context.mounted) return;
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(e.toString())),
                   );

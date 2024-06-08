@@ -44,6 +44,7 @@ class UniverseDetailScreen extends StatelessWidget {
                   universe.id,
                   nameController.text,
                 );
+                if (!context.mounted) return;
                 if (success) {
                   Navigator.of(context).pop();
                 } else {

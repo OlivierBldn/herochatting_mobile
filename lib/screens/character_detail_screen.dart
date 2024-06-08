@@ -1,4 +1,4 @@
-// // lib/screens/character_detail_screen.dart
+// lib/screens/character_detail_screen.dart
 
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -28,17 +28,22 @@ class CharacterDetailScreenState extends State<CharacterDetailScreen> {
   Future<void> _regenerateDescription() async {
     final characterProvider = Provider.of<CharacterProvider>(context, listen: false);
     final success = await characterProvider.regenerateCharacterDescription(character.universeId, character.id);
+    if (!mounted) return;
     if (success) {
       setState(() {
         character = characterProvider.characters.firstWhere((c) => c.id == character.id);
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Description regenerated')),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Description regenerated')),
+        );
+      }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to regenerate description')),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to regenerate description')),
+        );
+      }
     }
   }
 
@@ -79,15 +84,20 @@ class CharacterDetailScreenState extends State<CharacterDetailScreen> {
               onPressed: () async {
                 final chatProvider = Provider.of<ChatProvider>(context, listen: false);
                 final success = await chatProvider.createChat(character.id);
+                if (!context.mounted) return;
                 if (success) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Chat created')),
-                  );
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Chat created')),
+                    );
+                  }
                   Navigator.of(context).pushNamed('/chat_list', arguments: character.id);
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Failed to create chat')),
-                  );
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Failed to create chat')),
+                    );
+                  }
                 }
               },
               child: const Text('Create Chat'),

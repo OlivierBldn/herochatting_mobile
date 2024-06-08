@@ -41,6 +41,7 @@ class UniverseListScreen extends StatelessWidget {
                               final success = await universeProvider.createUniverse(
                                 nameController.text,
                               );
+                              if (!context.mounted) return;
                               if (success) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('Universe created')),

@@ -35,6 +35,7 @@ class ChatListScreen extends StatelessWidget {
                         icon: const Icon(Icons.delete),
                         onPressed: () async {
                           final success = await chatProvider.deleteChat(chat.id);
+                          if (!context.mounted) return;
                           if (success) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text('Chat deleted')),

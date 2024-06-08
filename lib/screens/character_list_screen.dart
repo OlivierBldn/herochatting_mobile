@@ -44,6 +44,7 @@ class CharacterListScreen extends StatelessWidget {
                                 universeId,
                                 nameController.text,
                               );
+                              if (!context.mounted) return;
                               if (success) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('Character created')),

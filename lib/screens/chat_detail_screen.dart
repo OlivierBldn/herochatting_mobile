@@ -1,4 +1,4 @@
-// // lib/screens/chat_detail_screen.dart
+// lib/screens/chat_detail_screen.dart
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +30,7 @@ class ChatDetailScreenState extends State<ChatDetailScreen> {
   Future<void> _loadLastMessage() async {
     final chatProvider = Provider.of<ChatProvider>(context, listen: false);
     final lastMessage = await chatProvider.fetchLastMessage(widget.chatId);
-    if (lastMessage != null) {
+    if (mounted && lastMessage != null) {
       setState(() {
         messages = [lastMessage];
       });
@@ -47,37 +47,48 @@ class ChatDetailScreenState extends State<ChatDetailScreen> {
     final chatProvider = Provider.of<ChatProvider>(context, listen: false);
     final allMessages = await chatProvider.fetchMessages(widget.chatId);
 
-    setState(() {
-      isLoading = false;
-      messages = allMessages;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+        messages = allMessages;
+      });
+    }
   }
 
   Future<void> _regenerateLastMessage() async {
     final chatProvider = Provider.of<ChatProvider>(context, listen: false);
     final success = await chatProvider.regenerateLastMessage(widget.chatId);
+    if (!mounted) return;
     if (success) {
       final newMessage = await chatProvider.fetchLastMessage(widget.chatId);
+      if (!mounted) return;
       if (newMessage != null) {
         setState(() {
           messages[messages.length - 1] = newMessage;
         });
-      }
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        scrollController.animateTo(
-          scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeOut,
-        );
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Last message regenerated')),
-      );
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            scrollController.animateTo(
+              scrollController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeOut,
+            );
+          }
+        });
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Last message regenerated')),
+          );
+        }
+      }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to regenerate last message')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to regenerate last message')),
+        );
+      }
     }
   }
 
@@ -131,6 +142,7 @@ class ChatDetailScreenState extends State<ChatDetailScreen> {
                     onPressed: () async {
                       final chatProvider = Provider.of<ChatProvider>(context, listen: false);
                       final success = await chatProvider.sendMessage(widget.chatId, messageController.text);
+                      if (!mounted) return;
                       if (success) {
                         final newMessage = Message(
                           id: DateTime.now().millisecondsSinceEpoch,
@@ -138,6 +150,7 @@ class ChatDetailScreenState extends State<ChatDetailScreen> {
                           isSentByHuman: true,
                         );
                         final responseMessage = await chatProvider.fetchLastMessage(widget.chatId);
+                        if (!context.mounted) return;
                         if (responseMessage != null) {
                           setState(() {
                             messages.add(newMessage);
@@ -145,21 +158,27 @@ class ChatDetailScreenState extends State<ChatDetailScreen> {
                           });
 
                           WidgetsBinding.instance.addPostFrameCallback((_) {
-                            scrollController.animateTo(
-                              scrollController.position.maxScrollExtent,
-                              duration: const Duration(milliseconds: 500),
-                              curve: Curves.easeOut,
-                            );
+                            if (mounted) {
+                              scrollController.animateTo(
+                                scrollController.position.maxScrollExtent,
+                                duration: const Duration(milliseconds: 500),
+                                curve: Curves.easeOut,
+                              );
+                            }
                           });
                         }
                         messageController.clear();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Message sent')),
-                        );
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Message sent')),
+                          );
+                        }
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Failed to send message')),
-                        );
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Failed to send message')),
+                          );
+                        }
                       }
                     },
                   ),
