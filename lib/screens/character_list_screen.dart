@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../providers/character_provider.dart';
+import '../providers/theme_provider.dart';
 import '../constants/colors.dart';
 
 class CharacterListScreen extends StatelessWidget {
@@ -15,6 +16,7 @@ class CharacterListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final nameController = TextEditingController();
+    final theme = Theme.of(context);
 
     Future<void> createCharacter(CharacterProvider characterProvider) async {
       showDialog(
@@ -46,39 +48,47 @@ class CharacterListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: AppColor.hWhite,
+        backgroundColor: theme.appBarTheme.backgroundColor ?? Colors.white,
         elevation: 1,
         centerTitle: true,
         title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             InkWell(
               onTap: () => Navigator.of(context).pop(),
               borderRadius: BorderRadius.circular(30),
               child: Container(
                 padding: const EdgeInsets.all(8),
-                decoration: const BoxDecoration(
-                  color: AppColor.hGreyLight,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.background,
                   shape: BoxShape.circle,
                 ),
                 child: SvgPicture.asset(
                   'assets/icons/chevron-left.svg',
                   width: 24,
                   height: 24,
-                  colorFilter: const ColorFilter.mode(AppColor.hGreyDark, BlendMode.srcIn),
+                  colorFilter: ColorFilter.mode(theme.iconTheme.color ?? AppColor.hGreyDark, BlendMode.srcIn),
                 ),
               ),
             ),
             const Spacer(),
-            const Text(
+            Text(
               'Characters',
+              textAlign: TextAlign.center,
               style: TextStyle(
-                color: AppColor.hBlack,
+                color: theme.textTheme.titleLarge?.color ?? AppColor.hBlack,
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
               ),
             ),
             const Spacer(),
-            const SizedBox(width: 48),
+            IconButton(
+              icon: Icon(theme.brightness == Brightness.dark ? Icons.light_mode : Icons.dark_mode),
+              onPressed: () {
+                final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+                themeProvider.toggleTheme();
+              },
+            ),
           ],
         ),
         toolbarHeight: 80,
@@ -104,29 +114,29 @@ class CharacterListScreen extends StatelessWidget {
                               controller: nameController,
                               decoration: InputDecoration(
                                 filled: true,
-                                fillColor: AppColor.hGreyLight,
+                                fillColor: theme.colorScheme.background,
                                 prefixIcon: Padding(
                                   padding: const EdgeInsets.all(12.0),
                                   child: SvgPicture.asset(
                                     'assets/icons/universe.svg',
                                     width: 16,
                                     height: 16,
-                                    colorFilter: const ColorFilter.mode(AppColor.hGrey, BlendMode.srcIn),
+                                    colorFilter: ColorFilter.mode(theme.iconTheme.color ?? AppColor.hGrey, BlendMode.srcIn),
                                   ),
                                 ),
                                 hintText: 'Character name',
-                                hintStyle: const TextStyle(color: AppColor.hGrey),
+                                hintStyle: TextStyle(color: theme.textTheme.bodyMedium?.color ?? AppColor.hGrey),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30),
-                                  borderSide: const BorderSide(color: AppColor.hGreyLight),
+                                  borderSide: BorderSide(color: theme.colorScheme.background),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30),
-                                  borderSide: const BorderSide(color: AppColor.hGreyLight),
+                                  borderSide: BorderSide(color: theme.colorScheme.background),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30),
-                                  borderSide: const BorderSide(color: AppColor.hGrey),
+                                  borderSide: BorderSide(color: theme.textTheme.bodyMedium?.color ?? AppColor.hGrey),
                                 ),
                                 contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                               ),
@@ -136,18 +146,18 @@ class CharacterListScreen extends StatelessWidget {
                           ElevatedButton(
                             onPressed: () => createCharacter(characterProvider),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColor.hBlueLight,
+                              backgroundColor: theme.colorScheme.secondary,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),
                               ),
                               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                              textStyle: const TextStyle(
-                                color: AppColor.hBlue,
+                              textStyle: TextStyle(
+                                color: theme.colorScheme.primary,
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            child: const Text('Create', style: TextStyle(color: AppColor.hBlue)),
+                            child: Text('Create', style: TextStyle(color: theme.colorScheme.primary)),
                           ),
                         ],
                       ),
@@ -171,7 +181,7 @@ class CharacterListScreen extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Card(
-                                color: AppColor.hGreyLight,
+                                color: theme.appBarTheme.backgroundColor ?? AppColor.hGreyLight,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
                                 ),
@@ -201,7 +211,11 @@ class CharacterListScreen extends StatelessWidget {
                                             character.name,
                                             textAlign: TextAlign.center,
                                             overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: theme.textTheme.bodyMedium?.color ?? AppColor.hBlack,
+                                            ),
                                           ),
                                         ),
                                       ),

@@ -7,6 +7,8 @@ import 'providers/user_provider.dart';
 import 'providers/universe_provider.dart';
 import 'providers/character_provider.dart';
 import 'providers/chat_provider.dart';
+import 'providers/theme_provider.dart';
+import 'constants/themes.dart';
 import 'screens/initial_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
@@ -39,67 +41,72 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => UniverseProvider()),
         ChangeNotifierProvider(create: (context) => CharacterProvider()),
         ChangeNotifierProvider(create: (context) => ChatProvider()),
+        ChangeNotifierProvider(create: (context) => ThemeProvider(isDarkMode: false)),
       ],
-      child: MaterialApp(
-        title: 'Herochatting',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        initialRoute: '/',
-        routes: {
-          '/': (context) => const InitialScreen(),
-          '/login': (context) => const LoginScreen(),
-          '/home': (context) => const HomeScreen(),
-          '/register': (context) => const RegisterScreen(),
-          '/user_list': (context) => const UserListScreen(),
-          '/universe_list': (context) => const UniverseListScreen(),
-          '/chat_list': (context) => const ChatListScreen(),
-        },
-        onGenerateRoute: (settings) {
-          if (settings.name == '/user_detail') {
-            final user = settings.arguments as User;
-            return MaterialPageRoute(
-              builder: (context) {
-                return UserDetailScreen(user: user);
-              },
-            );
-          } else if (settings.name == '/universe_detail') {
-            final universe = settings.arguments as Universe;
-            return MaterialPageRoute(
-              builder: (context) {
-                return UniverseDetailScreen(universe: universe);
-              },
-            );
-          } else if (settings.name == '/character_list') {
-            final universeId = settings.arguments as int;
-            return MaterialPageRoute(
-              builder: (context) {
-                return CharacterListScreen(universeId: universeId);
-              },
-            );
-          } else if (settings.name == '/character_detail') {
-            final character = settings.arguments as Character;
-            return MaterialPageRoute(
-              builder: (context) {
-                return CharacterDetailScreen(character: character);
-              },
-            );
-          } else if (settings.name == '/chat_list') {
-            return MaterialPageRoute(
-              builder: (context) {
-                return const ChatListScreen();
-              },
-            );
-          } else if (settings.name == '/chat_detail') {
-            final chatId = settings.arguments as int;
-            return MaterialPageRoute(
-              builder: (context) {
-                return ChatDetailScreen(chatId: chatId);
-              },
-            );
-          }
-          assert(false, 'Need to implement ${settings.name}');
-          return null;
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, child) {
+          return MaterialApp(
+            title: 'Herochatting',
+            theme: lightTheme,
+            darkTheme: darkTheme,
+            themeMode: themeProvider.themeMode,
+            initialRoute: '/',
+            routes: {
+              '/': (context) => const InitialScreen(),
+              '/login': (context) => const LoginScreen(),
+              '/home': (context) => const HomeScreen(),
+              '/register': (context) => const RegisterScreen(),
+              '/user_list': (context) => const UserListScreen(),
+              '/universe_list': (context) => const UniverseListScreen(),
+              '/chat_list': (context) => const ChatListScreen(),
+            },
+            onGenerateRoute: (settings) {
+              if (settings.name == '/user_detail') {
+                final user = settings.arguments as User;
+                return MaterialPageRoute(
+                  builder: (context) {
+                    return UserDetailScreen(user: user);
+                  },
+                );
+              } else if (settings.name == '/universe_detail') {
+                final universe = settings.arguments as Universe;
+                return MaterialPageRoute(
+                  builder: (context) {
+                    return UniverseDetailScreen(universe: universe);
+                  },
+                );
+              } else if (settings.name == '/character_list') {
+                final universeId = settings.arguments as int;
+                return MaterialPageRoute(
+                  builder: (context) {
+                    return CharacterListScreen(universeId: universeId);
+                  },
+                );
+              } else if (settings.name == '/character_detail') {
+                final character = settings.arguments as Character;
+                return MaterialPageRoute(
+                  builder: (context) {
+                    return CharacterDetailScreen(character: character);
+                  },
+                );
+              } else if (settings.name == '/chat_list') {
+                return MaterialPageRoute(
+                  builder: (context) {
+                    return const ChatListScreen();
+                  },
+                );
+              } else if (settings.name == '/chat_detail') {
+                final chatId = settings.arguments as int;
+                return MaterialPageRoute(
+                  builder: (context) {
+                    return ChatDetailScreen(chatId: chatId);
+                  },
+                );
+              }
+              assert(false, 'Need to implement ${settings.name}');
+              return null;
+            },
+          );
         },
       ),
     );
