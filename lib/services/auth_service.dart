@@ -72,6 +72,36 @@ class AuthService {
     return prefs.getString('token');
   }
 
+  Map<String, dynamic>? decodeToken(String token) {
+    try {
+      final parts = token.split('.');
+      if (parts.length != 3) {
+        return null;
+      }
+
+      final payload = json.decode(
+        utf8.decode(
+          base64Url.decode(
+            parts[1].padRight(parts[1].length + (4 - parts[1].length % 4) % 4, '='),
+          ),
+        ),
+      );
+      return payload;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  bool isTokenValid(String token) {
+    final payload = decodeToken(token);
+    if (payload == null || !payload.containsKey('exp')) {
+      return false;
+    }
+
+    final expiryDate = DateTime.fromMillisecondsSinceEpoch(payload['exp'] * 1000);
+    return expiryDate.isAfter(DateTime.now());
+  }
+
   Future<int?> getId() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getInt('id');

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../models/chat.dart';
 import '../models/message.dart';
+import '../models/character.dart';
 import '../services/auth_service.dart';
 
 class ChatProvider with ChangeNotifier {
@@ -212,6 +213,27 @@ class ChatProvider with ChangeNotifier {
       }
     } catch (error) {
       return false;
+    }
+  }
+
+  Future<Character?> fetchCharacterDetails(int characterId) async {
+    final token = await AuthService().getToken();
+    try {
+      final response = await http.get(
+        Uri.parse('${AuthService().apiUrl}/characters/$characterId'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final characterJson = json.decode(response.body);
+        return Character.fromJson(characterJson);
+      } else {
+        throw Exception('Failed to load character details');
+      }
+    } catch (error) {
+      rethrow;
     }
   }
 }

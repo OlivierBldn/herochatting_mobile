@@ -1,9 +1,11 @@
 // lib/screens/character_list_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../providers/character_provider.dart';
+import '../constants/colors.dart';
 
 class CharacterListScreen extends StatelessWidget {
   final int universeId;
@@ -14,9 +16,72 @@ class CharacterListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final nameController = TextEditingController();
 
+    Future<void> createCharacter(CharacterProvider characterProvider) async {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      );
+
+      final success = await characterProvider.createCharacter(universeId, nameController.text);
+      if (!context.mounted) return;
+      Navigator.of(context).pop();
+
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Character created')),
+        );
+        nameController.clear();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to create character')),
+        );
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Characters'),
+        automaticallyImplyLeading: false,
+        backgroundColor: AppColor.hWhite,
+        elevation: 1,
+        centerTitle: true,
+        title: Row(
+          children: [
+            InkWell(
+              onTap: () => Navigator.of(context).pop(),
+              borderRadius: BorderRadius.circular(30),
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: const BoxDecoration(
+                  color: AppColor.hGreyLight,
+                  shape: BoxShape.circle,
+                ),
+                child: SvgPicture.asset(
+                  'assets/icons/chevron-left.svg',
+                  width: 24,
+                  height: 24,
+                  colorFilter: const ColorFilter.mode(AppColor.hGreyDark, BlendMode.srcIn),
+                ),
+              ),
+            ),
+            const Spacer(),
+            const Text(
+              'Characters',
+              style: TextStyle(
+                color: AppColor.hBlack,
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+              ),
+            ),
+            const Spacer(),
+            const SizedBox(width: 48),
+          ],
+        ),
+        toolbarHeight: 80,
       ),
       body: FutureBuilder(
         future: Provider.of<CharacterProvider>(context, listen: false).fetchCharacters(universeId),
@@ -26,61 +91,125 @@ class CharacterListScreen extends StatelessWidget {
           } else {
             return Consumer<CharacterProvider>(
               builder: (ctx, characterProvider, child) {
+                final sortedCharacters = characterProvider.characters..sort((a, b) => a.name.compareTo(b.name));
+
                 return Column(
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Row(
                         children: [
-                          const Text('Create a new character'),
-                          TextField(
-                            controller: nameController,
-                            decoration: const InputDecoration(labelText: 'Character Name'),
+                          Expanded(
+                            child: TextField(
+                              controller: nameController,
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: AppColor.hGreyLight,
+                                prefixIcon: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: SvgPicture.asset(
+                                    'assets/icons/universe.svg',
+                                    width: 16,
+                                    height: 16,
+                                    colorFilter: const ColorFilter.mode(AppColor.hGrey, BlendMode.srcIn),
+                                  ),
+                                ),
+                                hintText: 'Character name',
+                                hintStyle: const TextStyle(color: AppColor.hGrey),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                  borderSide: const BorderSide(color: AppColor.hGreyLight),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                  borderSide: const BorderSide(color: AppColor.hGreyLight),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                  borderSide: const BorderSide(color: AppColor.hGrey),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                              ),
+                            ),
                           ),
+                          const SizedBox(width: 16),
                           ElevatedButton(
-                            onPressed: () async {
-                              final success = await characterProvider.createCharacter(
-                                universeId,
-                                nameController.text,
-                              );
-                              if (!context.mounted) return;
-                              if (success) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Character created')),
-                                );
-                                nameController.clear();
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Failed to create character')),
-                                );
-                              }
-                            },
-                            child: const Text('Create'),
+                            onPressed: () => createCharacter(characterProvider),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColor.hBlueLight,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                              textStyle: const TextStyle(
+                                color: AppColor.hBlue,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            child: const Text('Create', style: TextStyle(color: AppColor.hBlue)),
                           ),
                         ],
                       ),
                     ),
                     Expanded(
-                      child: ListView.builder(
-                        itemCount: characterProvider.characters.length,
+                      child: GridView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 16,
+                          crossAxisSpacing: 16,
+                          childAspectRatio: 0.75,
+                        ),
+                        itemCount: sortedCharacters.length,
                         itemBuilder: (ctx, i) {
-                          final character = characterProvider.characters[i];
-                          return ListTile(
-                            leading: character.image.isNotEmpty
-                                ? CachedNetworkImage(
-                                    imageUrl: 'https://mds.sprw.dev/image_data/${character.image}',
-                                    width: 50,
-                                    height: 50,
-                                    fit: BoxFit.cover,
-                                    placeholder: (context, url) => const CircularProgressIndicator(),
-                                    errorWidget: (context, url, error) => const Icon(Icons.error),
-                                  )
-                                : null,
-                            title: Text(character.name),
+                          final character = sortedCharacters[i];
+                          return GestureDetector(
                             onTap: () {
                               Navigator.of(context).pushNamed('/character_detail', arguments: character);
                             },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Card(
+                                color: AppColor.hGreyLight,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                elevation: 4,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.vertical(top: Radius.circular(20), bottom: Radius.circular(20)),
+                                      child: CachedNetworkImage(
+                                        imageUrl: 'https://mds.sprw.dev/image_data/${character.image}',
+                                        height: 150,
+                                        fit: BoxFit.cover,
+                                        placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                                        errorWidget: (context, url, error) => SvgPicture.asset(
+                                          'assets/icons/placeholder.svg',
+                                          width: 60,
+                                          height: 60,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                                          child: Text(
+                                            character.name,
+                                            textAlign: TextAlign.center,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           );
                         },
                       ),

@@ -37,10 +37,14 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> tryAutoLogin() async {
-    _token = await _authService.getToken();
-    if (_token != null) {
-      _user = await _authService.getUser(_token!);
+    final token = await _authService.getToken();
+    if (token != null && _authService.isTokenValid(token)) {
+      _user = await _authService.getUser(token);
+      _token = token;
       notifyListeners();
+    } else {
+      _user = null;
+      _token = null;
     }
   }
 }
