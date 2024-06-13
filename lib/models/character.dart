@@ -1,5 +1,6 @@
 // lib/models/character.dart
 
+// Define the Character model
 class Character {
   final int id;
   final String name;

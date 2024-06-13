@@ -1,5 +1,6 @@
 // lib/models/message.dart
 
+// Define the Message model
 class Message {
   final int id;
   final String content;

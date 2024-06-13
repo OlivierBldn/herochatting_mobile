@@ -8,6 +8,10 @@ import '../providers/user_provider.dart';
 import '../providers/theme_provider.dart';
 import '../constants/colors.dart';
 
+/// UserDetailScreen is a StatefulWidget that displays the details of a user.
+/// It allows the user to update the user's information if it's the user's own account.
+/// 
+/// 
 class UserDetailScreen extends StatefulWidget {
   final User user;
 
@@ -17,6 +21,9 @@ class UserDetailScreen extends StatefulWidget {
   UserDetailScreenState createState() => UserDetailScreenState();
 }
 
+/// UserDetailScreenState is the state of the UserDetailScreen.
+/// 
+/// 
 class UserDetailScreenState extends State<UserDetailScreen> {
   late TextEditingController _usernameController;
   late TextEditingController _emailController;

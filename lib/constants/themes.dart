@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'colors.dart';
 
+// Define the light and dark themes
+// The light theme is the default theme
 final ThemeData lightTheme = ThemeData(
   primaryColor: AppColor.hBlue,
   scaffoldBackgroundColor: AppColor.hWhite,

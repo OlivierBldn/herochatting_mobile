@@ -7,6 +7,11 @@ import '../providers/auth_provider.dart';
 import '../providers/theme_provider.dart';
 import '../constants/colors.dart';
 
+/// RegisterScreen is a StatefulWidget that allows the user to sign up for the app.
+/// It provides text fields for the user to enter their username, email, password, first name, and last name.
+/// It also provides a button to sign up and a link to navigate to the login screen.
+/// 
+/// 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -14,6 +19,9 @@ class RegisterScreen extends StatefulWidget {
   RegisterScreenState createState() => RegisterScreenState();
 }
 
+/// RegisterScreenState is the state of the RegisterScreen.
+/// 
+/// 
 class RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();

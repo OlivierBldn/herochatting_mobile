@@ -1,5 +1,6 @@
 // lib/models/user.dart
 
+// Define the User model
 class User {
   final int id;
   final String username;

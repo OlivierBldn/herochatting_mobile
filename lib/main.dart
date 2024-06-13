@@ -29,9 +29,58 @@ void main() {
   runApp(const MyApp());
 }
 
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+/// The [build] method builds the widget tree of the app.
+/// It returns a [MaterialApp] widget that provides the app's theme and routes.
+/// The app uses the [MultiProvider] widget to provide multiple providers to its descendants.
+/// 
+/// The [MaterialApp] widget has the following properties:
+/// - [title] is set to 'Herochatting'.
+/// - [theme] is set to [lightTheme].
+/// - [darkTheme] is set to [darkTheme].
+/// - [themeMode] is set to the value of [ThemeProvider.themeMode].
+/// - [initialRoute] is set to '/'.
+/// - [routes] is a map of routes that maps route names to builder functions.
+/// - [onGenerateRoute] is a function that generates routes based on the route settings.
+/// 
+/// The app has the following routes:
+/// - '/' navigates to the [InitialScreen].
+/// - '/login' navigates to the [LoginScreen].
+/// - '/home' navigates to the [HomeScreen].
+/// - '/register' navigates to the [RegisterScreen].
+/// - '/user_list' navigates to the [UserListScreen].
+/// - '/universe_list' navigates to the [UniverseListScreen].
+/// - '/chat_list' navigates to the [ChatListScreen].
+/// 
+/// The app also has dynamic routes that are generated using the [onGenerateRoute] function:
+/// - '/user_detail' navigates to the [UserDetailScreen] and passes a [User] object as an argument.
+/// - '/universe_detail' navigates to the [UniverseDetailScreen] and passes a [Universe] object as an argument.
+/// - '/character_list' navigates to the [CharacterListScreen] and passes a universe ID as an argument.
+/// - '/character_detail' navigates to the [CharacterDetailScreen] and passes a [Character] object as an argument.
+/// - '/chat_detail' navigates to the [ChatDetailScreen] and passes a chat ID as an argument.
+/// 
+/// The app uses the [Consumer] widget to listen to changes in the [ThemeProvider] and rebuild the app when the theme changes.
+/// 
+/// The app uses the [ChangeNotifierProvider] widget to provide the following providers to its descendants:
+/// - [AuthProvider]
+/// - [UserProvider]
+/// - [UniverseProvider]
+/// - [CharacterProvider]
+/// - [ChatProvider]
+/// - [ThemeProvider]
+/// 
+/// The [ThemeProvider] provider is initialized with the [isDarkMode] property set to false.
+/// 
+/// The [MaterialApp] widget is wrapped in a [MultiProvider] widget that provides the above providers to its descendants.
+/// 
+/// The [MyApp] widget is a StatelessWidget that returns the [MaterialApp] widget.
+/// 
+/// The [MyApp] widget is the root widget of the app and is passed to the [runApp] function to start the app.
+/// 
+/// 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(

@@ -5,6 +5,36 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
 
+/// AuthService is a class that provides methods to authenticate users.
+///
+/// It has methods to log in, register, save and retrieve tokens, and get user information.
+/// It uses the http package to make API calls and the shared_preferences package to store tokens.
+/// 
+/// The class has a private apiUrl field that holds the base URL of the API.
+/// 
+/// The login method takes a username and password, sends a POST request to the API to authenticate the user,
+/// and returns the user information if successful.
+/// 
+/// The register method takes a username, password, email, firstname, and lastname,
+/// sends a POST request to the API to register the user, and returns the user information if successful.
+/// 
+/// The saveToken method takes a token and saves it to the shared preferences.
+/// 
+/// The getToken method retrieves the token from the shared preferences.
+/// 
+/// The decodeToken method takes a token, decodes it, and returns the payload.
+/// 
+/// The isTokenValid method takes a token, decodes it, and checks if it is valid.
+/// 
+/// The getId method retrieves the user ID from the shared preferences.
+/// 
+/// The saveId method takes a user ID and saves it to the shared preferences.
+/// 
+/// The logout method clears the token and user ID from the shared preferences.
+/// 
+/// The getUser method takes a token, decodes it, and returns the user information.
+/// 
+/// 
 class AuthService {
   final String apiUrl = 'https://mds.sprw.dev';
 

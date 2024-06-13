@@ -9,6 +9,10 @@ import '../providers/universe_provider.dart';
 import '../providers/theme_provider.dart';
 import '../constants/colors.dart';
 
+/// UniverseDetailScreen is a StatefulWidget that displays the details of a universe.
+/// It allows the user to update the name of the universe and view the characters in the universe.
+/// 
+/// 
 class UniverseDetailScreen extends StatefulWidget {
   final Universe universe;
 
@@ -18,6 +22,9 @@ class UniverseDetailScreen extends StatefulWidget {
   UniverseDetailScreenState createState() => UniverseDetailScreenState();
 }
 
+/// UniverseDetailScreenState is the state of the UniverseDetailScreen.
+/// 
+/// 
 class UniverseDetailScreenState extends State<UniverseDetailScreen> {
   late TextEditingController _nameController;
   late String _universeName;

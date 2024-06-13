@@ -7,6 +7,10 @@ import '../providers/user_provider.dart';
 import '../providers/theme_provider.dart';
 import '../constants/colors.dart';
 
+/// UserListScreen is a StatefulWidget that displays a list of users.
+/// It provides a search bar to filter users by name.
+/// 
+/// 
 class UserListScreen extends StatefulWidget {
   const UserListScreen({super.key});
 
@@ -14,6 +18,9 @@ class UserListScreen extends StatefulWidget {
   UserListScreenState createState() => UserListScreenState();
 }
 
+/// UserListScreenState is the state of the UserListScreen.
+/// 
+/// 
 class UserListScreenState extends State<UserListScreen> {
   final TextEditingController _searchController = TextEditingController();
 

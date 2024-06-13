@@ -8,6 +8,44 @@ import '../providers/character_provider.dart';
 import '../providers/theme_provider.dart';
 import '../constants/colors.dart';
 
+/// CharacterListScreen is a StatelessWidget that displays a list of characters for a given universe.
+/// It takes a universeId as a parameter and fetches the characters for that universe.
+/// It provides a text field to create a new character in the universe.
+/// It displays the characters in a grid view with their name and image.
+/// It allows the user to tap on a character to view the character details.
+/// It also provides a button to toggle the theme of the app.
+/// 
+/// The class uses the Provider package to access the CharacterProvider and ThemeProvider.
+/// It uses the Consumer widget to listen for changes in the CharacterProvider and ThemeProvider.
+/// 
+/// The class uses the FutureBuilder widget to fetch the characters for the universe.
+/// It displays a loading indicator while the characters are being fetched.
+/// 
+/// The class uses a TextEditingController to get the name of the new character.
+/// It provides a method createCharacter to create a new character in the universe.
+/// It shows a loading dialog while the character is being created.
+/// It shows a snackbar with a success or error message after the character is created.
+/// 
+/// The class uses a GridView.builder to display the characters in a grid view.
+/// It displays the character image and name in a card.
+/// It allows the user to tap on a character to view the character details.
+/// 
+/// The class uses the Navigator to navigate to the character detail screen when a character is tapped.
+/// 
+/// The class provides a button to toggle the theme of the app.
+/// It uses the ThemeProvider to toggle the theme when the button is pressed.
+/// 
+/// The class uses the ScaffoldMessenger to show a snackbar when the character is created.
+/// 
+/// The class uses the CachedNetworkImage package to load the character images from the server.
+/// It displays a placeholder image if the image is not available.
+/// 
+/// The class uses the SvgPicture widget to display the back button and theme toggle icon.
+/// 
+/// The class uses the Theme.of(context) to access the theme of the app.
+/// It uses the theme colors and text styles to style the UI elements.
+/// 
+/// 
 class CharacterListScreen extends StatelessWidget {
   final int universeId;
 

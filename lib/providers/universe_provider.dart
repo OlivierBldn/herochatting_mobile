@@ -6,6 +6,30 @@ import 'dart:convert';
 import '../models/universe.dart';
 import '../services/auth_service.dart';
 
+/// UniverseProvider is a class that provides universe-related functionality.
+/// It uses the ChangeNotifier mixin to notify listeners when changes occur.
+/// 
+/// It has a private field _universes which is a list of Universe objects.
+/// It provides a getter for the _universes field.
+/// 
+/// The class provides several methods for universe operations:
+/// 
+/// - fetchUniverses: This method fetches all the universes from the server.
+///  It makes a GET request to the '/universes' endpoint.
+/// If the response is successful, it updates the _universes field with the fetched universes and notifies listeners.
+/// If the response is not successful, it throws an exception.
+/// 
+/// - updateUniverse: This method takes an id and a name, and updates the universe with the given id.
+/// It makes a PUT request to the '/universes/$id' endpoint.
+/// If the response is successful, it updates the corresponding universe in the _universes field and notifies listeners.
+/// It returns a boolean indicating whether the update was successful.
+/// 
+/// - createUniverse: This method takes a name, and creates a new universe with the given name.
+/// It makes a POST request to the '/universes' endpoint.
+/// If the response is successful, it adds the new universe to the _universes field and notifies listeners.
+/// It returns a boolean indicating whether the creation was successful.
+/// 
+/// 
 class UniverseProvider with ChangeNotifier {
   List<Universe> _universes = [];
 

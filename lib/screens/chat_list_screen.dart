@@ -7,6 +7,15 @@ import '../models/character.dart';
 import '../providers/theme_provider.dart';
 import '../constants/colors.dart';
 
+/// ChatListScreen is a StatelessWidget that displays a list of chats.
+/// It uses the ChatProvider to fetch the chats and the CharacterProvider to fetch the character details.
+/// 
+/// The screen displays a list of chats with the character's name and image.
+/// Each chat item has a delete button that allows the user to delete the chat.
+/// 
+/// The screen also has a toggle button to switch between light and dark themes.
+/// 
+/// 
 class ChatListScreen extends StatelessWidget {
   const ChatListScreen({super.key});
 

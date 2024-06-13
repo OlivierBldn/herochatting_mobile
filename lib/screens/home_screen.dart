@@ -6,6 +6,12 @@ import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/theme_provider.dart';
 
+/// HomeScreen is a StatelessWidget that displays the home screen of the app.
+/// It provides a list of menu items that allow the user to navigate to different screens.
+/// 
+/// The screen also has a toggle button to switch between light and dark themes.
+/// 
+/// 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -112,6 +118,10 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
+/// HomeMenuItem is a StatelessWidget that displays a menu item on the home screen.
+/// It provides an icon, text, and an onTap callback.
+/// 
+/// 
 class HomeMenuItem extends StatelessWidget {
   final String icon;
   final String text;

@@ -8,6 +8,70 @@ import '../models/message.dart';
 import '../models/character.dart';
 import '../services/auth_service.dart';
 
+/// ChatProvider is a class that provides chat-related functionality.
+/// It uses the ChangeNotifier mixin to notify listeners when changes occur.
+/// 
+/// It has a private field _chats which is a list of Chat objects.
+/// 
+/// It also has a private field _characterCache which is a map of characterId to Character objects.
+/// This is used to cache character details to avoid fetching them multiple times.
+/// 
+/// It provides a getter for the _chats field.
+/// 
+/// The class provides several methods for chat operations:
+/// 
+/// - fetchChats: This method fetches the chats for the current user.
+///  It makes a GET request to the '/conversations' endpoint with the user_id parameter.
+/// If the response is successful, it updates the _chats field with the fetched chats and notifies listeners.
+/// If the response is not successful, it throws an exception.
+/// 
+/// - fetchLastMessage: This method takes a chatId and fetches the last message in the chat.
+/// It makes a GET request to the '/conversations/$chatId/messages' endpoint.
+/// If the response is successful and there are messages, it returns the last message.
+/// If the response is successful and there are no messages, it returns null.
+/// If the response is not successful, it throws an exception.
+/// 
+/// - fetchMessages: This method takes a chatId and an optional beforeMessageId, and fetches the messages for the chat.
+/// It makes a GET request to the '/conversations/$chatId/messages' endpoint with the before_id parameter.
+/// If the response is successful, it returns a list of messages.
+/// If the response is not successful, it throws an exception.
+/// 
+/// - createChat: This method takes a characterId and creates a new chat with the character.
+/// It makes a POST request to the '/conversations' endpoint.
+/// If the response is successful, it adds the new chat to the _chats field and notifies listeners.
+/// It returns a boolean indicating whether the creation was successful.
+/// 
+/// - deleteChat: This method takes a chatId and deletes the chat.
+/// It makes a DELETE request to the '/conversations/$chatId' endpoint.
+/// If the response is successful, it removes the chat from the _chats field and notifies listeners.
+/// It returns a boolean indicating whether the deletion was successful.
+/// 
+/// - sendMessage: This method takes a chatId and a content, and sends a message in the chat.
+/// It makes a POST request to the '/conversations/$chatId/messages' endpoint.
+/// If the response is successful, it adds the new message to the chat and notifies listeners.
+/// It returns a boolean indicating whether the sending was successful.
+/// 
+/// - reloadChat: This method takes a chatId and reloads the chat.
+/// It makes a GET request to the '/conversations/$chatId' endpoint.
+/// If the response is successful, it updates the chat in the _chats field and notifies listeners.
+/// It returns a boolean indicating whether the reload was successful.
+/// 
+/// - regenerateLastMessage: This method takes a chatId and regenerates the last message in the chat.
+/// It makes a PUT request to the '/conversations/$chatId' endpoint.
+/// If the response is successful, it reloads the chat and returns a boolean indicating whether the regeneration was successful.
+/// If the response is not successful, it returns false.
+/// 
+/// - fetchCharacterDetails: This method takes a characterId and fetches the character details.
+/// It makes a GET request to the '/characters/$characterId' endpoint.
+/// If the response is successful, it returns the character details.
+/// If the response is not successful, it throws an exception.
+/// 
+/// - fetchCharacterByChatId: This method takes a chatId and fetches the character details for the chat.
+/// It makes a GET request to the '/conversations/$chatId' endpoint.
+/// If the response is successful, it returns the character details.
+/// If the response is not successful, it throws an exception.
+/// 
+/// 
 class ChatProvider with ChangeNotifier {
   List<Chat> _chats = [];
   final Map<int, Character> _characterCache = {};

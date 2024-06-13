@@ -2,6 +2,7 @@
 
 import 'package:flutter/widgets.dart';
 
+// Define the colors used in the app
 class AppColor {
   AppColor._();
   static const Color hBlue = Color.fromRGBO(13,110,253,1.0);

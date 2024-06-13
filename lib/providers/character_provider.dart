@@ -6,6 +6,35 @@ import 'dart:convert';
 import '../models/character.dart';
 import '../services/auth_service.dart';
 
+/// CharacterProvider is a class that provides character-related functionality.
+/// It uses the ChangeNotifier mixin to notify listeners when changes occur.
+/// 
+/// It has a private field _characters which is a list of Character objects.
+/// It provides a getter for the _characters field.
+/// 
+/// The class provides several methods for character operations:
+/// 
+/// - fetchCharacters: This method takes a universeId and fetches the characters for that universe.
+///   It makes a GET request to the '/universes/$universeId/characters' endpoint.
+///   If the response is successful, it updates the _characters field with the fetched characters and notifies listeners.
+///   If the response is not successful, it throws an exception.
+/// 
+/// - createCharacter: This method takes a universeId and a name, and creates a new character in that universe with the given name.
+///   It makes a POST request to the '/universes/$universeId/characters' endpoint.
+///   If the response is successful, it adds the new character to the _characters field and notifies listeners.
+///   It returns a boolean indicating whether the creation was successful.
+/// 
+/// - updateCharacter: This method takes a universeId, a characterId, and a name, and updates the character with the given characterId in the given universe.
+///   It makes a PUT request to the '/universes/$universeId/characters/$characterId' endpoint.
+///   If the response is successful, it updates the corresponding character in the _characters field and notifies listeners.
+///   It returns a boolean indicating whether the update was successful.
+/// 
+/// - regenerateCharacterDescription: This method takes a universeId and a characterId, and regenerates the description of the character with the given characterId in the given universe.
+///   It makes a PUT request to the '/universes/$universeId/characters/$characterId' endpoint.
+///   If the response is successful, it updates the corresponding character in the _characters field and notifies listeners.
+///   It returns a boolean indicating whether the regeneration was successful.
+/// 
+/// 
 class CharacterProvider with ChangeNotifier {
   List<Character> _characters = [];
 

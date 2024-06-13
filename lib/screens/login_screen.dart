@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/theme_provider.dart';
-import 'package:logger/logger.dart';
 import '../constants/colors.dart';
 
+/// LoginScreen is a StatefulWidget that allows the user to sign in to the app.
+/// It provides text fields for the user to enter their email and password.
+/// It also provides a button to sign in and a link to navigate to the registration screen.
+/// 
+/// 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -14,10 +18,12 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
+/// _LoginScreenState is the state of the LoginScreen.
+/// 
+/// 
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final Logger _logger = Logger();
   bool _isPasswordVisible = false;
 
   @override
@@ -126,7 +132,6 @@ class _LoginScreenState extends State<LoginScreen> {
               onPressed: () async {
                 final authProvider = Provider.of<AuthProvider>(context, listen: false);
                 try {
-                  _logger.i("Attempting to log in with username: ${_usernameController.text}");
                   await authProvider.login(
                     _usernameController.text,
                     _passwordController.text,
@@ -142,7 +147,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     );
                   }
                 } catch (e) {
-                  _logger.e("Login failed", e);
                   if (!context.mounted) return;
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(e.toString())),

@@ -2,6 +2,7 @@
 
 import 'message.dart';
 
+// Define the Chat model
 class Chat {
   final int id;
   final int characterId;

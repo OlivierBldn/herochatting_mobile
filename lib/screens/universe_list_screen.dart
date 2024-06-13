@@ -8,6 +8,15 @@ import '../providers/universe_provider.dart';
 import '../providers/theme_provider.dart';
 import '../constants/colors.dart';
 
+/// UniverseListScreen is a StatelessWidget that displays a list of universes.
+/// It uses the UniverseProvider to fetch the universes.
+/// 
+/// The screen displays a list of universes with the universe's name and image.
+/// Each universe item is clickable and navigates to the UniverseDetailScreen.
+/// 
+/// The screen also has a form to create a new universe.
+/// 
+/// 
 class UniverseListScreen extends StatelessWidget {
   const UniverseListScreen({super.key});
 

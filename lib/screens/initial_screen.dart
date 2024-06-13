@@ -6,6 +6,11 @@ import '../providers/auth_provider.dart';
 import 'home_screen.dart';
 import 'login_screen.dart';
 
+/// InitialScreen is a StatefulWidget that checks if the user is already logged in.
+/// If the user is logged in, it navigates to the HomeScreen.
+/// If the user is not logged in, it navigates to the LoginScreen.
+/// 
+/// 
 class InitialScreen extends StatefulWidget {
   const InitialScreen({super.key});
 
@@ -13,6 +18,10 @@ class InitialScreen extends StatefulWidget {
   InitialScreenState createState() => InitialScreenState();
 }
 
+
+/// InitialScreenState is the state of the InitialScreen.
+/// 
+/// 
 class InitialScreenState extends State<InitialScreen> {
   @override
   void initState() {

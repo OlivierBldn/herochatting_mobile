@@ -10,6 +10,14 @@ import '../providers/chat_provider.dart';
 import '../providers/theme_provider.dart';
 import '../constants/colors.dart';
 
+/// CharacterDetailScreen is a StatefulWidget that displays the details of a character.
+/// It takes a Character object as a parameter and displays the character's name, image, and description.
+/// It also provides buttons to regenerate the character's description and create a chat for the character.
+/// 
+/// The class has a private field character of type Character.
+/// It has a private field isLoading of type bool to track the loading state of the screen.
+/// 
+/// 
 class CharacterDetailScreen extends StatefulWidget {
   final Character character;
 
@@ -19,6 +27,23 @@ class CharacterDetailScreen extends StatefulWidget {
   CharacterDetailScreenState createState() => CharacterDetailScreenState();
 }
 
+/// CharacterDetailScreenState is the state of the CharacterDetailScreen.
+/// It has a private field character of type Character.
+/// It has a private field isLoading of type bool to track the loading state of the screen.
+/// 
+/// The class overrides the initState method to initialize the character field with the character passed in the constructor.
+/// 
+/// The class defines the _regenerateDescription method to regenerate the description of the character.
+/// It updates the character field with the new description and shows a snackbar to indicate success or failure.
+/// 
+/// The class defines the _createChat method to create a chat for the character.
+/// It shows a snackbar to indicate success or failure.
+/// 
+/// The class overrides the build method to build the UI of the screen.
+/// It displays the character's image, name, and description.
+/// It provides buttons to regenerate the description and create a chat.
+/// 
+/// 
 class CharacterDetailScreenState extends State<CharacterDetailScreen> {
   late Character character;
   bool isLoading = false;

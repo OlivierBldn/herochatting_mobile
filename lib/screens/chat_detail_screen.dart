@@ -8,6 +8,39 @@ import '../models/message.dart';
 import '../providers/theme_provider.dart';
 import '../constants/colors.dart';
 
+/// ChatDetailScreen is a StatefulWidget that displays the chat details.
+/// 
+/// It has a required parameter chatId which is the ID of the chat.
+/// 
+/// It has a List of Message objects messages to store the chat messages.
+/// It has a boolean isLoading to indicate whether messages are being loaded.
+/// It has a boolean isSendingMessage to indicate whether a message is being sent.
+/// It has a boolean isRegenerating to indicate whether the last message is being regenerated.
+/// It has a String characterName to store the name of the character.
+/// 
+/// The state has an initState method to initialize the state.
+/// It loads the last message and character details when the screen is initialized.
+/// 
+/// The state has a _loadCharacterDetails method to load the character details.
+/// It fetches the character details by chat ID and updates the characterName field.
+/// 
+/// The state has a _loadLastMessage method to load the last message.
+/// It fetches the last message by chat ID and updates the messages field.
+/// 
+/// The state has a _loadAllMessages method to load all messages.
+/// It fetches all messages by chat ID and updates the messages field.
+/// 
+/// The state has a _regenerateLastMessage method to regenerate the last message.
+/// It regenerates the last message by chat ID and updates the messages field.
+/// 
+/// The state has a dispose method to dispose the controllers.
+/// 
+/// The state has a build method to build the UI.
+/// It displays the chat messages in a ListView.
+/// It displays a message input field to send messages.
+/// It displays a button to regenerate the last message.
+/// 
+/// 
 class ChatDetailScreen extends StatefulWidget {
   final int chatId;
   const ChatDetailScreen({super.key, required this.chatId});
@@ -16,6 +49,9 @@ class ChatDetailScreen extends StatefulWidget {
   ChatDetailScreenState createState() => ChatDetailScreenState();
 }
 
+/// ChatDetailScreenState is the state of the ChatDetailScreen.
+/// 
+/// 
 class ChatDetailScreenState extends State<ChatDetailScreen> {
   final TextEditingController messageController = TextEditingController();
   final ScrollController scrollController = ScrollController();

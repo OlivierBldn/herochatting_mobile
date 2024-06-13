@@ -1,5 +1,6 @@
 // lib/models/universe.dart
 
+// Define the Universe model
 class Universe {
   final int id;
   final String name;
