@@ -42,7 +42,7 @@ samples, guidance on mobile development, and a full API reference.
 - **Edit Universes:** Universe details can be viewed and edited, including a link to view characters in the universe.
 
 ### Character Management
-- **View Characters:** A list of all characters in a specific universe can be viewed.
+- **View Characters:** A list of all characters in a specific universe can be viewed, with options to add a new character.
 - **Edit Characters:** Character details can be viewed and edited, and a new description can be generated for a character.
 
 ### Conversation Management
@@ -51,6 +51,9 @@ samples, guidance on mobile development, and a full API reference.
 
 ### Message Loading
 - When a chat is opened, only the last message is loaded. Refreshing the page loads the entire conversation history.
+
+### Darkmode - Lightmode
+- In the top right corner of each screen an icon is displayed. When the user ckicks on the icon, the theme of the application switches between darkmode and lightmode.
 
 ## Technologies Used
 - **Flutter:** Version 3.19.6
@@ -78,6 +81,7 @@ This is the entry point of the application. It sets up the necessary providers a
 
 ### Constants
 - **colors.dart:** Defines the color scheme for the application.
+- **themes.dart:** Define the theme behaviour for the darkmode and lightmode.
 
 ### Models
 Defines the data models used in the application, including `Character`, `Chat`, `Message`, and `Universe`.
@@ -162,12 +166,12 @@ class ChatProvider with ChangeNotifier {
 1. **Login:**
    - Navigate to the login screen.
    - Enter username and password.
-   - Click "Login".
+   - Click "Sign In" button.
 
 2. **Registration:**
    - Navigate to the registration screen.
    - Enter the required details.
-   - Click "Register".
+   - Click "Sign Up" button.
 
 ### Managing Users
 1. **View Users:**
@@ -175,42 +179,63 @@ class ChatProvider with ChangeNotifier {
    - Use the search function to find a specific user.
 
 2. **Edit Users:**
+   - only allowed for your own account (currently connected user).
    - Click on a user to view details.
    - Make changes and save.
 
 ### Managing Universes
-1. **View Universes:**
+1. **Create Universe:**
+   - Navigate to the universe management screen.
+   - Fill the text input with placeholder "Universe Name"
+   - Click on "Create" button to create the Universe.
+
+2. **View Universes:**
    - Navigate to the universe management screen.
    - Click on a universe to view details.
 
-2. **Edit Universes:**
+3. **Edit Universes:**
    - Click on a universe to view and edit details.
    - Save changes.
 
-3. **View Characters in a Universe:**
+4. **View Characters in a Universe:**
    - From the universe details, click on the link to view characters.
 
 ### Managing Characters
-1. **View Characters:**
+1. **Create Character:**
+   - Navigate to the character management screen for a specific universe.
+   - Fill the text input with placeholder "Character Name"
+   - Click on "Create" button to create the Character.
+
+2. **View Characters:**
    - Navigate to the character management screen for a specific universe.
    - Click on a character to view details.
 
-2. **Edit Characters:**
+3. **Edit Characters:**
    - Click on a character to view and edit details.
    - Generate a new description if needed.
    - Save changes.
 
 ### Managing Conversations
-1. **View Conversations:**
+1. **Create Conversation:**
+   - Navigate to the character management screen for a specific universe.
+   - Click on a character to view and edit details.
+   - Click on "Create Chat" button to create a new chat with the Character.
+   - Only possible if you have no chat already existing with the selected Character.
+
+2. **View Conversations:**
    - Navigate to the conversation management screen.
    - Click on a conversation to view details.
 
-2. **Send Messages:**
+3. **Send Messages:**
    - In the conversation details screen, enter a message.
-   - Click "Send".
+   - Click "Send" icon.
 
-3. **Regenerate Last Message:**
-   - In the conversation details screen, click "Regenerate Last Message".
+4. **Regenerate Last Message:**
+   - In the conversation details screen, click "Regenerate Last Message" to send your last message again and get a new answer.
+
+4. **Delete Conversation:**
+   - Navigate to the conversation management screen.
+   - Click on the cross icon next to the conversation to delete it.
 
 ### Message Loading
 - On opening a chat, only the last message is loaded.
