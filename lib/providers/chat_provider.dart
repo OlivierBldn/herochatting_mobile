@@ -207,7 +207,25 @@ class ChatProvider with ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-        return await reloadChat(chatId);
+        await Future.delayed(const Duration(milliseconds: 500));
+
+        try {
+          final response = await http.put(
+            Uri.parse('${AuthService().apiUrl}/conversations/$chatId'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $token',
+            },
+          );
+
+          if (response.statusCode == 200) {
+            return await reloadChat(chatId);
+          } else {
+            return false;
+          }
+        } catch (error) {
+          return false;
+        }
       } else {
         return false;
       }

@@ -23,6 +23,7 @@ class ChatDetailScreenState extends State<ChatDetailScreen> {
   List<Message> messages = [];
   bool isLoading = false;
   bool isSendingMessage = false;
+  bool isRegenerating = false;
   String? characterName;
 
   @override
@@ -71,6 +72,9 @@ class ChatDetailScreenState extends State<ChatDetailScreen> {
   }
 
   Future<void> _regenerateLastMessage() async {
+    setState(() {
+      isRegenerating = true;
+    });
     final chatProvider = Provider.of<ChatProvider>(context, listen: false);
     final success = await chatProvider.regenerateLastMessage(widget.chatId);
     if (!mounted) return;
@@ -80,6 +84,7 @@ class ChatDetailScreenState extends State<ChatDetailScreen> {
       if (newMessage != null) {
         setState(() {
           messages[messages.length - 1] = newMessage;
+          isRegenerating = false;
         });
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -99,6 +104,9 @@ class ChatDetailScreenState extends State<ChatDetailScreen> {
         }
       }
     } else {
+      setState(() {
+        isRegenerating = false;
+      });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Failed to regenerate last message')),
@@ -240,7 +248,12 @@ class ChatDetailScreenState extends State<ChatDetailScreen> {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.send),
+                    icon: SvgPicture.asset(
+                      'assets/icons/send.svg',
+                      width: 24,
+                      height: 24,
+                      colorFilter: const ColorFilter.mode(AppColor.hBlue, BlendMode.srcIn),
+                    ),
                     onPressed: () async {
                       setState(() {
                         isSendingMessage = true;
@@ -293,6 +306,11 @@ class ChatDetailScreenState extends State<ChatDetailScreen> {
                 ],
               ),
             ),
+            if (isRegenerating)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0),
+                child: CircularProgressIndicator(),
+              ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
