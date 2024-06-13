@@ -11,6 +11,8 @@ class UserProvider with ChangeNotifier {
   List<User> _filteredUsers = [];
 
   List<User> get users => _filteredUsers;
+  List<User> get filteredUsers => _filteredUsers.isEmpty ? _users : _filteredUsers;
+
 
   Future<void> fetchUsers() async {
     final token = await AuthService().getToken();

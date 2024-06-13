@@ -10,6 +10,7 @@ import '../services/auth_service.dart';
 
 class ChatProvider with ChangeNotifier {
   List<Chat> _chats = [];
+  final Map<int, Character> _characterCache = {};
 
   List<Chat> get chats => _chats;
 
@@ -55,8 +56,7 @@ class ChatProvider with ChangeNotifier {
     }
   }
 
-
-    Future<List<Message>> fetchMessages(int chatId, {int? beforeMessageId}) async {
+  Future<List<Message>> fetchMessages(int chatId, {int? beforeMessageId}) async {
     final token = await AuthService().getToken();
     try {
       final url = Uri.parse('${AuthService().apiUrl}/conversations/$chatId/messages${beforeMessageId != null ? '?before_id=$beforeMessageId' : ''}');
@@ -161,34 +161,34 @@ class ChatProvider with ChangeNotifier {
   }
 
   Future<bool> reloadChat(int chatId) async {
-  final token = await AuthService().getToken();
+    final token = await AuthService().getToken();
 
-  try {
-    final response = await http.get(
-      Uri.parse('${AuthService().apiUrl}/conversations/$chatId'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
+    try {
+      final response = await http.get(
+        Uri.parse('${AuthService().apiUrl}/conversations/$chatId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
 
-    if (response.statusCode == 200) {
-      final responseBody = json.decode(response.body);
-      final updatedChat = Chat.fromJson(responseBody);
+      if (response.statusCode == 200) {
+        final responseBody = json.decode(response.body);
+        final updatedChat = Chat.fromJson(responseBody);
 
-      final chatIndex = _chats.indexWhere((chat) => chat.id == chatId);
-      if (chatIndex != -1) {
-        _chats[chatIndex] = updatedChat;
-        notifyListeners();
+        final chatIndex = _chats.indexWhere((chat) => chat.id == chatId);
+        if (chatIndex != -1) {
+          _chats[chatIndex] = updatedChat;
+          notifyListeners();
+        }
+        return true;
+      } else {
+        return false;
       }
-      return true;
-    } else {
+    } catch (error) {
       return false;
     }
-  } catch (error) {
-    return false;
   }
-}
 
   Future<bool> regenerateLastMessage(int chatId) async {
     final token = await AuthService().getToken();
@@ -217,6 +217,10 @@ class ChatProvider with ChangeNotifier {
   }
 
   Future<Character?> fetchCharacterDetails(int characterId) async {
+    if (_characterCache.containsKey(characterId)) {
+      return _characterCache[characterId];
+    }
+
     final token = await AuthService().getToken();
     try {
       final response = await http.get(
@@ -228,9 +232,33 @@ class ChatProvider with ChangeNotifier {
 
       if (response.statusCode == 200) {
         final characterJson = json.decode(response.body);
-        return Character.fromJson(characterJson);
+        final character = Character.fromJson(characterJson);
+        _characterCache[characterId] = character;
+        return character;
       } else {
         throw Exception('Failed to load character details');
+      }
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<Character?> fetchCharacterByChatId(int chatId) async {
+    final token = await AuthService().getToken();
+    try {
+      final response = await http.get(
+        Uri.parse('${AuthService().apiUrl}/conversations/$chatId'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final conversationJson = json.decode(response.body);
+        final characterId = conversationJson['character_id'];
+        return await fetchCharacterDetails(characterId);
+      } else {
+        throw Exception('Failed to load conversation details');
       }
     } catch (error) {
       rethrow;
